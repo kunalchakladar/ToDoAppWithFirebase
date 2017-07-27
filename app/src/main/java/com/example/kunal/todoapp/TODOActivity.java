@@ -1,7 +1,9 @@
 package com.example.kunal.todoapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TODOActivity extends AppCompatActivity {
 
@@ -43,7 +46,6 @@ public class TODOActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
 
-        final TextView textView = (TextView) findViewById(R.id.textView);
 
         taskLists = (ListView) findViewById(R.id.taskList);
         arrayList = new ArrayList<>();
@@ -102,8 +104,6 @@ public class TODOActivity extends AppCompatActivity {
             }
         });
 
-       // Log.d(TAG, "onChildAdded: " + "running2");
-
         taskRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -112,10 +112,8 @@ public class TODOActivity extends AppCompatActivity {
                 Log.d(TAG, "onChildAdded: " + "running");
                 String key = dataSnapshot.getKey();
 
-                //textView.setText(key);
-
                 Tasks myTask = dataSnapshot.getValue(Tasks.class);
-               // textView.setText(myTask.getTask());
+
                 if(uid.equals(myTask.getUid())){
 
                     //add to the list
@@ -126,7 +124,6 @@ public class TODOActivity extends AppCompatActivity {
                     Log.d(TAG, "onChildAdded: " + arrayList);
 
                 }
-
                 customAdapter.notifyDataSetChanged();
 
             }
@@ -161,11 +158,5 @@ public class TODOActivity extends AppCompatActivity {
         });
 
     }
-
-//    public void removeTask(){
-//
-//        customAdapter.notifyDataSetChanged();
-//
-//    }
 
 }

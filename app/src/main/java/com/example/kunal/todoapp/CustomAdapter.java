@@ -14,11 +14,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,14 +26,14 @@ import java.util.ArrayList;
 
 public class CustomAdapter extends BaseAdapter {
 
-    Context context;
-    ArrayList arrayList;
-    ArrayList keys;
+    private Context context;
+    private ArrayList arrayList;
+    private ArrayList keys;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference taskRef = database.getReference("tasks");
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String uid = user.getUid();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference taskRef = database.getReference("tasks");
+    //private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    //private String uid = user.getUid();
 
 
     public CustomAdapter(Context context, ArrayList arrayList, ArrayList keys) {
@@ -67,10 +62,12 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.task_layout, viewGroup, false);
 
-        TextView textView = (TextView) view.findViewById(R.id.myTaskTextView);
-        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        if(view == null)
+            view = inflater.inflate(R.layout.task_layout, viewGroup, false);
+
+        TextView textView = view.findViewById(R.id.myTaskTextView);
+        final CheckBox checkBox = view.findViewById(R.id.checkBox);
         textView.setText(arrayList.get(i).toString());
 
         checkBox.setOnClickListener(new View.OnClickListener() {
@@ -78,10 +75,6 @@ public class CustomAdapter extends BaseAdapter {
             public void onClick(View view) {
                 if(checkBox.isChecked()){
                    // Toast.makeText(context, "Checked" + "and tapped on " + arrayList.get(i) + "\nand key is " + keys.get(i), Toast.LENGTH_SHORT).show();
-
-
-//                    arrayList.remove(i);
-//                    keys.remove(i);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Are you sure to remove this task?");

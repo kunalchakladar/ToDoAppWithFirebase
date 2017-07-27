@@ -32,6 +32,7 @@ public class TODOActivity extends AppCompatActivity {
     DatabaseReference taskRef = database.getReference("tasks");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
+    ArrayList keys = new ArrayList();
 
     ListView taskLists;
     ArrayList<String> arrayList;
@@ -46,7 +47,7 @@ public class TODOActivity extends AppCompatActivity {
 
         taskLists = (ListView) findViewById(R.id.taskList);
         arrayList = new ArrayList<>();
-        customAdapter = new CustomAdapter(this, arrayList);
+        customAdapter = new CustomAdapter(this, arrayList, keys);
         taskLists.setAdapter(customAdapter);
         customAdapter.notifyDataSetChanged();
 
@@ -110,6 +111,7 @@ public class TODOActivity extends AppCompatActivity {
                 Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue());
                 Log.d(TAG, "onChildAdded: " + "running");
                 String key = dataSnapshot.getKey();
+
                 //textView.setText(key);
 
                 Tasks myTask = dataSnapshot.getValue(Tasks.class);
@@ -118,6 +120,9 @@ public class TODOActivity extends AppCompatActivity {
 
                     //add to the list
                     arrayList.add(myTask.getTask());
+                    keys.add(key);
+
+                    Log.d(TAG, "onChildAdded: Keys" + keys);
                     Log.d(TAG, "onChildAdded: " + arrayList);
 
                 }
@@ -133,7 +138,15 @@ public class TODOActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved: " + dataSnapshot.getValue());
+                String key = dataSnapshot.getKey();
 
+                Tasks myTask = dataSnapshot.getValue(Tasks.class);
+                Log.d(TAG, "onChildRemoved: Deleted" + myTask.getTask());
+                arrayList.remove(myTask.getTask());
+                keys.remove(key);
+
+                customAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -147,18 +160,12 @@ public class TODOActivity extends AppCompatActivity {
             }
         });
 
-//        taskRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
+
+//    public void removeTask(){
+//
+//        customAdapter.notifyDataSetChanged();
+//
+//    }
 
 }
